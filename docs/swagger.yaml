@@ -1,0 +1,450 @@
+openapi: 3.0.0
+info:
+  title: API Multimódulo Express - Sequelize
+  version: 1.0.0
+  description: Documentación completa que cubre los servicios de Socios (P1), Transacciones (P2), Empleados y Publicaciones (P3).
+servers:
+  - url: http://localhost:3000/api
+    description: Servidor de Desarrollo Local
+
+paths:
+  # === P1: SOCIOS ===
+  /socio:
+    get:
+      summary: Recuperar todos los socios ordenados por apellido (ASC)
+      tags: [P1 - Socios]
+      responses:
+        200:
+          description: Lista de socios recuperada con éxito.
+        400:
+          description: Error al obtener los socios.
+    post:
+      summary: Crear un nuevo socio
+      tags: [P1 - Socios]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocioInput'
+      responses:
+        201:
+          description: Socio creado exitosamente.
+        400:
+          description: Error al crear el socio.
+
+  /socio/activo:
+    get:
+      summary: Recuperar los socios activos (activo = true) ordenados por apellido
+      tags: [P1 - Socios]
+      responses:
+        200:
+          description: Lista de socios activos obtenida.
+        400:
+          description: Error al obtener los socios activos.
+
+  /socio/{id}:
+    put:
+      summary: Actualizar datos de un socio por ID
+      tags: [P1 - Socios]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocioInput'
+      responses:
+        200:
+          description: Socio actualizado correctamente.
+        404:
+          description: Socio no encontrado.
+        400:
+          description: Error al actualizar socio.
+    delete:
+      summary: Eliminar (Borrado lógico) un socio por ID
+      tags: [P1 - Socios]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Socio eliminado correctamente.
+        404:
+          description: Socio no encontrado.
+        400:
+          description: Error al eliminar el socio.
+
+  /socio/{id}/restore:
+    patch:
+      summary: Restaurar un socio eliminado lógicamente
+      tags: [P1 - Socios]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Socio restaurado exitosamente.
+        404:
+          description: Socio no encontrado o no estaba eliminado.
+        400:
+          description: Error al restaurar el socio.
+
+
+  # === P2: TRANSACCIONES ===
+  /transaccion:
+    get:
+      summary: Obtener todas las transacciones ordenadas por fecha de creación descendente
+      tags: [P2 - Transacciones]
+      responses:
+        200:
+          description: Lista de todas las transacciones obtenida con éxito.
+        400:
+          description: Error al obtener las transacciones.
+    post:
+      summary: Crear una nueva transacción
+      tags: [P2 - Transacciones]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransaccionInput'
+      responses:
+        201:
+          description: Transacción creada correctamente.
+        400:
+          description: Error al crear la transacción.
+
+  /transaccion/email:
+    get:
+      summary: Obtener transacciones filtradas por el email del cliente
+      tags: [P2 - Transacciones]
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "cliente@correo.com"
+      responses:
+        200:
+          description: Transacciones asociadas al email encontradas.
+        400:
+          description: Falta parámetro requerido o error de servidor.
+
+  /transaccion/idioma/{idioma}:
+    get:
+      summary: Obtener transacciones donde el idioma sea origen o destino
+      tags: [P2 - Transacciones]
+      parameters:
+        - name: idioma
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "es"
+      responses:
+        200:
+          description: Lista de transacciones que coinciden con el idioma.
+        400:
+          description: Error al obtener transacciones por idioma.
+
+
+  # === P3: EMPLEADOS Y PUBLICACIONES ===
+  /empleado:
+    get:
+      summary: Obtener todos los empleados ordenados por apellido (ASC)
+      tags: [P3 - Empleados]
+      responses:
+        200:
+          description: Lista de empleados obtenida.
+        400:
+          description: Error al obtener los empleados.
+    post:
+      summary: Crear un nuevo empleado
+      tags: [P3 - Empleados]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpleadoInput'
+      responses:
+        201:
+          description: Empleado creado correctamente.
+        400:
+          description: Error al crear el empleado.
+
+  /empleado/{id}:
+    get:
+      summary: Buscar un empleado por su ID primario
+      tags: [P3 - Empleados]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Datos del empleado.
+        404:
+          description: Empleado no encontrado.
+        400:
+          description: Error al obtener el empleado.
+    delete:
+      summary: Eliminar un empleado por ID (Borrado lógico)
+      tags: [P3 - Empleados]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Empleado eliminado correctamente.
+        404:
+          description: Empleado no encontrado.
+        400:
+          description: Error al eliminar el empleado.
+
+  /empleado/{id}/restore:
+    patch:
+      summary: Restaurar un empleado eliminado lógicamente
+      tags: [P3 - Empleados]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Empleado restaurado exitosamente.
+        404:
+          description: Empleado no encontrado o no estaba eliminado.
+        400:
+          description: Error al restaurar el empleado.
+
+  /publicacion:
+    get:
+      summary: Obtener publicaciones incluyendo los datos de su Empleado relacionado
+      tags: [P3 - Publicaciones]
+      responses:
+        200:
+          description: Lista completa de publicaciones con relaciones.
+        400:
+          description: Error al obtener las publicaciones.
+    post:
+      summary: Crear una publicación verificando la existencia del empleado asignado
+      tags: [P3 - Publicaciones]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicacionInput'
+      responses:
+        201:
+          description: Publicación creada correctamente junto al objeto del empleado.
+        404:
+          description: El empleado especificado en empleadoId no existe.
+        400:
+          description: Error al crear la publicación.
+
+  /publicacion/buscar:
+    get:
+      summary: Buscar publicaciones filtrando opcionalmente por coincidencia de Título y Vigencia
+      tags: [P3 - Publicaciones]
+      parameters:
+        - name: titulo
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Fragmento de texto contenido en el título
+        - name: vigencia
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ["true", "false"]
+          description: Estado vigente de la publicación
+      responses:
+        200:
+          description: Publicaciones que coinciden con los criterios de búsqueda.
+        404:
+          description: Error al buscar publicación.
+
+  /publicacion/{id}:
+    put:
+      summary: Actualizar una publicación por ID retornando el registro modificado con su empleado
+      tags: [P3 - Publicaciones]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicacionInput'
+      responses:
+        200:
+          description: Publicación actualizada correctamente.
+        404:
+          description: Publicacion no encontrada.
+        400:
+          description: Error al actualizar la publicación.
+    delete:
+      summary: Eliminar una publicación (Borrado lógico)
+      tags: [P3 - Publicaciones]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Publicación eliminada correctamente.
+        404:
+          description: Publicacion no encontrada.
+        400:
+          description: Error al eliminar la publicacion.
+
+  /publicacion/{id}/restore:
+    patch:
+      summary: Restaurar una publicación eliminada lógicamente
+      tags: [P3 - Publicaciones]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Publicación restaurada exitosamente.
+        404:
+          description: Publicacion no encontrada o no estaba eliminada.
+        400:
+          description: Error al restaurar la publicacion.
+
+components:
+  schemas:
+    SocioInput:
+      type: object
+      required:
+        - nombre
+        - apellido
+        - dni
+      properties:
+        nombre:
+          type: string
+          example: "Claudio"
+        apellido:
+          type: string
+          example: "Maradona"
+        dni:
+          type: string
+          example: "20443556"
+        numeroSocio:
+          type: integer
+          example: 1542
+        foto:
+          type: string
+          example: "https://drive.google.com/file/d/1klFyHsMR6Xe8Fyi8DmcQ8eVKA2RH1Psr/view?usp=sharing"
+        activo:
+          type: boolean
+          example: true
+
+    TransaccionInput:
+      type: object
+      required:
+        - emailCliente
+        - idiomaOrigen
+        - textoOrigen
+        - idiomaDestino
+        - textoDestino
+      properties:
+        emailCliente:
+          type: string
+          example: "cliente@correo.com"
+        idiomaOrigen:
+          type: string
+          example: "es"
+        textoOrigen:
+          type: string
+          example: "Hola mundo"
+        idiomaDestino:
+          type: string
+          example: "en"
+        textoDestino:
+          type: string
+          example: "Hello world"
+
+    EmpleadoInput:
+      type: object
+      required:
+        - nombre
+        - apellido
+        - dni
+        - email
+      properties:
+        nombre:
+          type: string
+          example: "Ana"
+        apellido:
+          type: string
+          example: "Pérez"
+        dni:
+          type: string
+          example: "35998112"
+        email:
+          type: string
+          example: "ana.perez@empresa.com"
+
+    PublicacionInput:
+      type: object
+      required:
+        - titulo
+        - contenido
+        - empleadoId
+        - imagenAsociada
+      properties:
+        titulo:
+          type: string
+          example: "Nuevas Políticas de Trabajo 2026"
+        contenido:
+          type: string
+          example: "Cuerpo detallado del comunicado interno corporativo..."
+        imagenAsociada:
+          type: string
+          example: "https://drive.google.com/file/d/1klFyHsMR6Xe8Fyi8DmcQ8eVKA2RH1Psr/view?usp=sharing"
+        vigente:
+          type: boolean
+          example: true
+        fechaPublicacion:
+          type: string
+          format: date-time
+          example: "2026-06-15T12:00:00Z"
+        empleadoId:
+          type: integer
+          example: 1
