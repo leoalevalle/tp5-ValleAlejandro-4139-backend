@@ -1,4 +1,5 @@
 const Socio = require('../../models/p1/socio.model');
+const Local = require('../../models/p1/local.model');
 const { Op } = require('sequelize');
 
 const socioCtrl = {};
@@ -6,7 +7,11 @@ const socioCtrl = {};
 socioCtrl.getSocios = async (req, res) => {
     try {
         const socios = await Socio.findAll({
-            order:[['apellido', 'ASC']]
+            order: [['apellido', 'ASC']],
+            include: [{
+                model: Local,
+                as: 'local'
+            }]
         });
         res.status(200).json(socios);
     } catch (error) {

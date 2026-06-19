@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../config/database');
+const Local = require('./local.model');
 
 const Socio = sequelize.define('Socio', {
     nombre: {
@@ -57,5 +58,8 @@ const Socio = sequelize.define('Socio', {
     paranoid: true // logico   
 
 });
+
+Socio.belongsTo(Local, { foreignKey: 'localId', as: 'local' });
+Local.hasOne(Socio, { foreignKey: 'localId', as: 'socio' });
 
 module.exports = Socio;

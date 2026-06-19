@@ -2,20 +2,37 @@ openapi: 3.0.0
 info:
   title: API Multimódulo Express - Sequelize
   version: 1.0.0
-  description: Documentación completa que cubre los servicios de Socios (P1), Transacciones (P2), Empleados y Publicaciones (P3).
+  description: Documentación completa que cubre los servicios de Socios (P1), Locales (P1), Transacciones (P2), Empleados y Publicaciones (P3).
 servers:
   - url: http://localhost:3000/api
     description: Servidor de Desarrollo Local
 
 paths:
+  # === P1: LOCALES ===
+  /local:
+    post:
+      summary: Crear un nuevo local
+      tags: [P1 - Locales]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocalInput'
+      responses:
+        201:
+          description: Local creado exitosamente.
+        400:
+          description: Error al crear el local.
+
   # === P1: SOCIOS ===
   /socio:
     get:
-      summary: Recuperar todos los socios ordenados por apellido (ASC)
+      summary: Recuperar todos los socios ordenados por apellido (ASC), incluyendo los datos de su local
       tags: [P1 - Socios]
       responses:
         200:
-          description: Lista de socios recuperada con éxito.
+          description: Lista de socios (con datos de locales) recuperada con éxito.
         400:
           description: Error al obtener los socios.
     post:
@@ -323,7 +340,7 @@ paths:
             type: integer
       responses:
         200:
-          description: Publicación eliminada correctamente.
+          description: Publicación eliminado correctamente.
         404:
           description: Publicacion no encontrada.
         400:
@@ -349,6 +366,22 @@ paths:
 
 components:
   schemas:
+    LocalInput:
+      type: object
+      required:
+        - numerolocal
+        - superficie
+      properties:
+        numerolocal:
+          type: string
+          example: "Local de Prueba"
+        superficie:
+          type: string
+          example: "75 m2"
+        activo:
+          type: boolean
+          example: true
+
     SocioInput:
       type: object
       required:
@@ -374,6 +407,10 @@ components:
         activo:
           type: boolean
           example: true
+        localId:
+          type: integer
+          example: 1
+          description: ID asignado del Local que posee el socio
 
     TransaccionInput:
       type: object

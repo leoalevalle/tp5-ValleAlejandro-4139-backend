@@ -19,6 +19,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 //Cargamos el modulo de direccionamiento de rutas 
 // P1 Socios
 app.use('/api/socio', require('./src/routes/p1/socio.route'));
+app.use('/api/local', require('./src/routes/p1/local.route'))
 // P2 Transacciones
 app.use('/api/transaccion', require('./src/routes/p2/transaccion.route'));
 
@@ -30,7 +31,7 @@ app.use('/api/publicacion', require('./src/routes/p3/publicacion.route'));
 app.set('port', process.env.PORT || 3000); 
  
 // Sincronizar Base de Datos y arrancar el servidor 
-sequelize.sync({ force: false, alter: false})
+sequelize.sync({ force: false, alter: true})
     .then(() => {
         console.log('Tablas de PostgreSQL sincronizadas');
         app.listen(app.get('port'), () => {
