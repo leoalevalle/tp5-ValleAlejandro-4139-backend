@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize'); 
  
 // Crea proyectodb en el servidory configura las credenciales de tu bd de PostgreSQL 
-const sequelize = new Sequelize('proyectodb', 'postgres', 'leonel2014', { 
+const sequelize = new Sequelize('proyectodb', 'postgres', 'tucontraseña', { 
   host: 'localhost', 
   dialect: 'postgres', 
   logging: false, // Evita que llene la consola con logs de consultas SQL básicas 
